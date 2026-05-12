@@ -1,0 +1,110 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{listings}
+
+\geometry{margin=2.5cm}
+
+\title{Documentación de despliegue}
+\author{EventConnect}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introducción}
+
+\noindent
+Este documento describe el proceso de despliegue de la aplicación \textbf{EventConnect}.
+La aplicación está formada por tres partes principales: el frontend, el backend y la
+base de datos. El frontend y el backend se encuentran desplegados en \textbf{Render},
+mientras que la base de datos se gestiona mediante \textbf{MongoDB Atlas}. \\
+
+\noindent
+El objetivo de esta documentación es explicar cómo está desplegada la aplicación, qué
+servicios intervienen, cómo se realiza el arranque inicial y cómo se cargan los datos
+necesarios para que el sistema funcione correctamente.
+
+\section{Servicios utilizados}
+
+La aplicación utiliza los siguientes servicios para su despliegue:
+
+\begin{center}
+\begin{tabular}{ll}
+  \toprule
+  \textbf{Componente} & \textbf{Servicio utilizado} \\
+  \midrule
+  Frontend & Render, como sitio estático \\
+  Backend & Render, como servicio web \\
+  Base de datos & MongoDB Atlas \\
+  Repositorios & GitHub \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+El despliegue se ha organizado separando el frontend y el backend en servicios
+independientes.
+\section{Despliegue de la aplicación}
+
+\noindent
+La aplicación está desplegada utilizando \textbf{Render} para el frontend y el backend,
+y \textbf{MongoDB Atlas} como base de datos en la nube. La base de datos se encuentra
+en un cluster de MongoDB Atlas, desde donde se obtiene la URI de conexión. Para poder
+acceder a ella se ha creado un usuario con contraseña y se ha permitido el acceso desde
+cualquier IP mediante la regla \texttt{0.0.0.0/0}, ya que Render no proporciona una IP
+fija en este tipo de despliegues. La URI de conexión se configura en Render como
+variable de entorno, evitando incluir credenciales directamente en el código. \\
+
+\noindent
+El backend está desplegado en Render como un \textbf{servicio web}. Este servicio está
+conectado al repositorio del backend en GitHub y utiliza una rama específica de
+despliegue. Cuando se suben cambios a esa rama, Render permite desplegar la nueva
+versión del backend. En este servicio se configuran las variables de entorno necesarias,
+como la conexión a MongoDB, las claves de autenticación y las claves de servicios
+externos. \\
+
+\noindent
+El frontend también está desplegado en Render, pero como \textbf{sitio estático}. Al
+igual que el backend, está conectado a su repositorio de GitHub y utiliza una rama de
+despliegue. Render construye la aplicación Angular y publica los archivos generados
+para que puedan ser accedidos desde el navegador. En este caso no se han configurado
+variables de entorno adicionales, ya que el frontend no necesita ninguna. \\
+
+\section{Carga inicial de datos} 
+
+\noindent
+Para que la aplicación tenga datos disponibles, se utilizan procesos de carga inicial y
+sincronización. La aplicación cuenta con \textbf{seeders}, que permiten cargar datos
+iniciales en la base de datos cuando sea necesario. \\
+
+\noindent
+Además, el backend incluye funcionalidades para importar eventos desde la API de Datos
+Abiertos del Ayuntamiento de Zaragoza. Esta importación permite guardar eventos reales
+en MongoDB y utilizarlos posteriormente desde el frontend y desde las funcionalidades
+de IA.
+
+\section{URLs de acceso}
+
+Las URLs públicas de acceso son las siguientes:
+
+\begin{center}
+\begin{tabular}{ll}
+  \toprule
+  \textbf{Recurso} & \textbf{URL} \\
+  \midrule
+  Frontend & \textit{https://frontend-c9bg.onrender.com/} \\
+  API / Swagger & \textit{https://backend-hi6i.onrender.com/api/docs/} \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\end{document}
